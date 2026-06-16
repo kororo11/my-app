@@ -1,3 +1,4 @@
+import confetti from "canvas-confetti";
 import { useState } from "react";
 import "./App.css";
 
@@ -15,9 +16,17 @@ function App() {
 
     const toggleTodo = (id) => {
         setTodos(
-            todos.map((todo) =>
-                todo.id === id ? { ...todo, done: !todo.done } : todo,
-            ),
+            todos.map((todo) => {
+                if (todo.id === id && !todo.done) {
+                    // 완료로 바꿀 때만 폭죽 실행
+                    confetti({
+                        particleCount: 100,
+                        spread: 70,
+                        origin: { y: 0.6 },
+                    });
+                }
+                return todo.id === id ? { ...todo, done: !todo.done } : todo;
+            }),
         );
     };
 
@@ -39,7 +48,7 @@ function App() {
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
                     onKeyDown={(e) => {
-                        if (e.key === "Enter" && e.nativeEvent.isComposing)
+                        if (e.key === "Enter" && !e.nativeEvent.isComposing)
                             addTodo();
                     }}
                     placeholder="할 일을 입력하세요"
@@ -62,11 +71,22 @@ function App() {
                             marginBottom: "8px",
                         }}
                     >
+                        {/* 체크박스 아이콘 — 클릭하면 완료/미완료 토글 */}
                         <span
                             onClick={() => toggleTodo(todo.id)}
                             style={{
-                                flex: 1,
+                                fontSize: "20px",
                                 cursor: "pointer",
+                                marginRight: "8px",
+                            }}
+                        >
+                            {todo.done ? "✅" : "⬜"}
+                        </span>
+
+                        {/* 할 일 텍스트 */}
+                        <span
+                            style={{
+                                flex: 1,
                                 textDecoration: todo.done
                                     ? "line-through"
                                     : "none",
@@ -75,6 +95,8 @@ function App() {
                         >
                             {todo.text}
                         </span>
+
+                        {/* 삭제 버튼 */}
                         <button
                             onClick={() => deleteTodo(todo.id)}
                             style={{ marginLeft: "8px" }}
