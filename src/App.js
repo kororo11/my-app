@@ -1,4 +1,3 @@
-import confetti from "canvas-confetti";
 import { useState } from "react";
 import "./App.css";
 
@@ -16,17 +15,9 @@ function App() {
 
     const toggleTodo = (id) => {
         setTodos(
-            todos.map((todo) => {
-                if (todo.id === id && !todo.done) {
-                    // 완료로 바꿀 때만 폭죽 실행
-                    confetti({
-                        particleCount: 100,
-                        spread: 70,
-                        origin: { y: 0.6 },
-                    });
-                }
-                return todo.id === id ? { ...todo, done: !todo.done } : todo;
-            }),
+            todos.map((todo) =>
+                todo.id === id ? { ...todo, done: !todo.done } : todo,
+            ),
         );
     };
 
@@ -71,18 +62,6 @@ function App() {
                             marginBottom: "8px",
                         }}
                     >
-                        {/* 체크박스 아이콘 — 클릭하면 완료/미완료 토글 */}
-                        <span
-                            onClick={() => toggleTodo(todo.id)}
-                            style={{
-                                fontSize: "20px",
-                                cursor: "pointer",
-                                marginRight: "8px",
-                            }}
-                        >
-                            {todo.done ? "✅" : "⬜"}
-                        </span>
-
                         {/* 할 일 텍스트 */}
                         <span
                             style={{
